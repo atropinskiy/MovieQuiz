@@ -43,10 +43,15 @@
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="UqQ-tX-QtM" secondAttribute="height" multiplier="2:3" id="a3N-W1-8p2"/>
                                         </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Рейтинг этого фильма меньше, чем 5?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AGY-o7-Lpe" userLabel="Question label">
                                         <rect key="frame" x="0.0" y="648.66666666666663" width="390" height="100.33333333333337"/>
-                                        <fontDescription key="fontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="23"/>
+                                        <fontDescription key="fontDescription" name="YSDisplay-Bold" family="YS Display" pointSize="23"/>
                                         <color key="textColor" name="YP White"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -70,7 +75,7 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
-                                                    <action selector="NoTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="z2x-bq-nDW"/>
+                                                    <action selector="noTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="haP-dO-z8B"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j5J-MZ-KZ8" userLabel="Yes button">
@@ -112,9 +117,13 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="NoButton" destination="zjP-bP-eQR" id="AF9-DX-nBo"/>
+                        <outlet property="YesButton" destination="j5J-MZ-KZ8" id="2MN-7I-w1i"/>
                         <outlet property="counterLabel" destination="fo0-iA-KIW" id="Q3g-Zn-8eu"/>
                         <outlet property="imageView" destination="UqQ-tX-QtM" id="qkp-BA-rEZ"/>
+                        <outlet property="noButton" destination="zjP-bP-eQR" id="Fec-h1-yMH"/>
                         <outlet property="textLabel" destination="AGY-o7-Lpe" id="naq-bf-jzG"/>
+                        <outlet property="yesButton" destination="j5J-MZ-KZ8" id="e4K-hy-CyV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
