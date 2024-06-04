@@ -114,20 +114,22 @@ final class MovieQuizViewController: UIViewController {
     private func showAnswerResult(isCorrect: Bool) {
         imageView.layer.masksToBounds = true // даём разрешение на рисовани
         imageView.layer.borderWidth = 8 // толщина рамки
+        disableButtons()
         if isCorrect {
             imageView.layer.borderColor = UIColor.ypGreen.cgColor
             correctAnswers += 1
-            self.disableButtons()
+            
         }
         else {
             imageView.layer.borderColor = UIColor.ypRed.cgColor
         }
-        imageView.layer.cornerRadius = 20
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.imageView.layer.borderWidth = 0
             self.imageView.layer.borderColor = nil
             self.imageView.layer.cornerRadius = 0
             self.showNextQuestionOrResults()
+            self.imageView.layer.cornerRadius = 20
             self.enableButtons()
         }
     }
@@ -158,7 +160,6 @@ final class MovieQuizViewController: UIViewController {
         let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
             self.currentQuestionIndex = 0
             self.correctAnswers = 0
-            
             let firstQuestion = self.questions[self.currentQuestionIndex]
             let viewModel = self.convert(model: firstQuestion)
             self.show(quiz: viewModel)
