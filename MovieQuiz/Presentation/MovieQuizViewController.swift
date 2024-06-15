@@ -45,17 +45,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
     } 
     
-    // MARK: - AlertPresenterDelegate
-    func didClosedAlert() {
-            currentQuestionIndex = 0
-            correctAnswers = 0
-            questionFactory.requestNextQuestion()
-        }
-    
-    
-    
-    
-    
     //  Остальные функции
     // Функция конвертации вопроса во View
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
