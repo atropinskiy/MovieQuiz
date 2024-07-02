@@ -27,23 +27,23 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         alertPresenter = AlertPresenter(delegate: self)
         self.questionFactory = questionFactory  // 4
-
+        
         questionFactory.requestNextQuestion()
     }
     
     // MARK: - QuestionFactoryDelegate
     func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question = question else {
+        guard let question else {
             return
         }
-
+        
         currentQuestion = question
         let viewModel = convert(model: question)
         
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
         }
-    } 
+    }
     
     //  Остальные функции
     // Функция конвертации вопроса во View
@@ -104,7 +104,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             
             let alertModel = AlertModel(
                 title: "Этот раунд окончен!",
-                message: "Ваш результат: \(correctAnswers)/10\nКоличество сыгранных квизов: \(gamesCount)\nРекорд: \(bestGame.total)/10 (\(bestGame.date.dateTimeString))\nСредняя точность: \(String(format: "%.2f", totalAccuracy))",
+                message: """
+                    Ваш результат: \(correctAnswers)/10\n
+                    Количество сыгранных квизов: \(gamesCount)\n
+                    Рекорд: \(bestGame.total)/10 (\(bestGame.date.dateTimeString))\n
+                    Средняя точность: \(String(format: "%.2f", totalAccuracy))
+                    """,
                 buttonText: "OK") { [weak self] _ in
                     guard let self = self else { return }
                     self.correctAnswers = 0
@@ -117,7 +122,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             questionFactory.requestNextQuestion()
         }
     }
-       
+    
     private func disableButtons() {
         yesButton.isEnabled = false
         noButton.isEnabled = false

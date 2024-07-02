@@ -5,8 +5,8 @@
 //  Created by alex_tr on 13.06.2024.
 //
 import UIKit
-
 import Foundation
+
 class AlertPresenter: AlertPresenterProtocol {
     weak var delegate: UIViewController?
     init(delegate: UIViewController) {
