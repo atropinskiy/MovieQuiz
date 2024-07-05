@@ -8,11 +8,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet weak private var counterLabel: UILabel!
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var yesButton: UIButton!
+    @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private let questionsAmount: Int = 10
-    private var questionFactory: QuestionFactoryProtocol = QuestionFactory()
+    private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var alertPresenter: AlertPresenterProtocol?
     private var statisticService: StatisticServiceProtocol = StatisticService()
@@ -22,13 +23,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         statisticService = StatisticService()
-        let questionFactory = QuestionFactory() // 2
-        questionFactory.delegate = self         // 3
-        
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self) // 2    // 3
+        showLoadingIndicator()
         alertPresenter = AlertPresenter(delegate: self)
-        self.questionFactory = questionFactory  // 4
-        
-        questionFactory.requestNextQuestion()
+        questionFactory?.loadData()
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -36,6 +34,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question else {
             return
         }
+        print(question)
         
         currentQuestion = question
         let viewModel = convert(model: question)
@@ -48,19 +47,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     //  Остальные функции
     // Функция конвертации вопроса во View
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        let image = UIImage(named: model.image) ?? UIImage()
-        let questionNumber = "\(currentQuestionIndex + 1)/\(questionsAmount)"
-        let question = model.text
-        
-        
-        let viewModel = QuizStepViewModel(
-            image: image,
-            question: question,
-            questionNumber: questionNumber)
-        return viewModel
+        return QuizStepViewModel(
+            image: UIImage(data: model.image) ?? UIImage(),
+            question: model.text,
+            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
     }
+    
     // Функция показа вопроса и остального контента
     private func show(quiz step: QuizStepViewModel) {
+        print(step.question)
         imageView.image = step.image
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
@@ -68,6 +63,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         
     }
+    
+    
     
     // Функция результата ответа
     private func showAnswerResult(isCorrect: Bool) {
@@ -100,8 +97,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             let gamesCount = statisticService.gamesCount
             let totalAccuracy = statisticService.totalAccuracy
             let bestGame = statisticService.bestGame
-            
-            
             let alertModel = AlertModel(
                 title: "Этот раунд окончен!",
                 message: """
@@ -114,13 +109,23 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                     guard let self = self else { return }
                     self.correctAnswers = 0
                     self.currentQuestionIndex = 0
-                    self.questionFactory.requestNextQuestion() }
+                    self.questionFactory?.requestNextQuestion() }
             alertPresenter?.showAlert(quiz: alertModel)
             
         } else { // если еще не конец игры
             currentQuestionIndex += 1 // увеличиваем индекс вопроса
-            questionFactory.requestNextQuestion()
+            questionFactory?.requestNextQuestion()
         }
+    }
+    
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    private func hideLoadingIndicator() {
+        activityIndicator.isHidden = true
+        activityIndicator.stopAnimating()
     }
     
     private func disableButtons() {
@@ -131,6 +136,32 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private func enableButtons() {
         yesButton.isEnabled = true
         noButton.isEnabled = true
+    }
+    
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        
+        let model = AlertModel(title: "Ошибка",
+                               message: message,
+                               buttonText: "Попробовать еще раз") { _ in
+
+            
+            self.currentQuestionIndex = 0
+            self.correctAnswers = 0
+            
+            self.questionFactory?.requestNextQuestion()
+        }
+        
+        alertPresenter?.showAlert(quiz: model)
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription)
+    }
+    
+    func didLoadDataFromServer() {
+        hideLoadingIndicator()
+        questionFactory?.requestNextQuestion()
     }
     
     @IBAction private func noTouched(_ sender: Any) {
