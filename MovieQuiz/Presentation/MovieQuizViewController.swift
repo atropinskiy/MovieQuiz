@@ -34,8 +34,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question else {
             return
         }
-        print(question)
-        
         currentQuestion = question
         let viewModel = convert(model: question)
         
@@ -109,6 +107,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                     guard let self = self else { return }
                     self.correctAnswers = 0
                     self.currentQuestionIndex = 0
+                    self.questionFactory?.loadData()
                     self.questionFactory?.requestNextQuestion() }
             alertPresenter?.showAlert(quiz: alertModel)
             
