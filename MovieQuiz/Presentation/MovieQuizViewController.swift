@@ -28,31 +28,18 @@ final class MovieQuizViewController: UIViewController {
         counterLabel.text = step.questionNumber
         imageView.layer.cornerRadius = 20
     }
-
-    // Функция результата ответа !!! Остается
-    func showAnswerResult(isCorrect: Bool) {
-        imageView.layer.masksToBounds = true // даём разрешение на рисовани
-        imageView.layer.borderWidth = 8 // толщина рамки
-        disableButtons()
-        if isCorrect {
-            imageView.layer.borderColor = UIColor.ypGreen.cgColor
-            self.presenter.correctAnswers += 1
-            
+    
+    func highlightImageBorder(isCorrectAnswer: Bool) {
+            imageView.layer.masksToBounds = true
+            imageView.layer.borderWidth = 8
+            imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         }
-        else {
-            imageView.layer.borderColor = UIColor.ypRed.cgColor
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else {return}
-            self.imageView.layer.borderWidth = 0
-            self.imageView.layer.borderColor = nil
-            self.imageView.layer.cornerRadius = 0
-            self.presenter.showNextQuestionOrResults()
-            self.imageView.layer.cornerRadius = 20
-            self.enableButtons()
-        }
+    func resetImageBorder() {
+        self.imageView.layer.borderWidth = 0
+        self.imageView.layer.borderColor = nil
     }
+    
+    // Функция результата ответа !!! Остается
     
     func showLoadingIndicator() {
         activityIndicator.isHidden = false
@@ -64,12 +51,12 @@ final class MovieQuizViewController: UIViewController {
         activityIndicator.stopAnimating()
     }
     
-    private func disableButtons() {
+    func disableButtons() {
         yesButton.isEnabled = false
         noButton.isEnabled = false
     }
     
-    private func enableButtons() {
+    func enableButtons() {
         yesButton.isEnabled = true
         noButton.isEnabled = true
     }

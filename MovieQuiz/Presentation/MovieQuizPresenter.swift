@@ -63,37 +63,48 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
         
         let givenAnswer = isYes
+        let answerResult = givenAnswer == currentQuestion.correctAnswer
         
-        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        didAnswerCorrect(isCorrectAnswer: answerResult)
+        showAnswerResult(isCorrect: answerResult)
+    }
+    
+    func didAnswerCorrect(isCorrectAnswer: Bool) {
+        if isCorrectAnswer {
+            self.correctAnswers += 1
+        }
     }
     
     
     func showNextQuestionOrResults() {
         if self.isLastQuestion() {
-            statisticService.store(correct: correctAnswers, total: self.questionsAmount)
-            let gamesCount = statisticService.gamesCount
-            let totalAccuracy = statisticService.totalAccuracy
-            let bestGame = statisticService.bestGame
-            let alertModel = AlertModel(
-                title: "Этот раунд окончен!",
-                message: """
-                    Ваш результат: \(correctAnswers)/10\n
-                    Количество сыгранных квизов: \(gamesCount)\n
-                    Рекорд: \(bestGame.total)/10 (\(bestGame.date.dateTimeString))\n
-                    Средняя точность: \(String(format: "%.2f", totalAccuracy))
-                    """,
-                buttonText: "Сыграть ещё раз") { [weak self] _ in
-                    guard let self = self else { return }
-                    correctAnswers = 0
-                    self.resetQuestionIndex()
-                    self.questionFactory?.requestNextQuestion() }
-            
-            viewController?.alertPresenter?.showAlert(quiz: alertModel)
-            
+            self.makeResultsMessage()
         } else { // если еще не конец игры
             self.switchToNextQuestion()
             self.questionFactory?.requestNextQuestion()
         }
+    }
+    
+    func makeResultsMessage() {
+        statisticService.store(correct: correctAnswers, total: self.questionsAmount)
+        let gamesCount = statisticService.gamesCount
+        let totalAccuracy = statisticService.totalAccuracy
+        let bestGame = statisticService.bestGame
+        let alertModel = AlertModel(
+            title: "Этот раунд окончен!",
+            message: """
+                Ваш результат: \(correctAnswers)/10\n
+                Количество сыгранных квизов: \(gamesCount)\n
+                Рекорд: \(bestGame.total)/10 (\(bestGame.date.dateTimeString))\n
+                Средняя точность: \(String(format: "%.2f", totalAccuracy))
+                """,
+            buttonText: "Сыграть ещё раз") { [weak self] _ in
+                guard let self = self else { return }
+                correctAnswers = 0
+                self.resetQuestionIndex()
+                self.questionFactory?.requestNextQuestion() }
+        
+        viewController?.alertPresenter?.showAlert(quiz: alertModel)
     }
     
     func restartGame() {
@@ -111,4 +122,17 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         viewController?.hideLoadingIndicator()
         questionFactory?.requestNextQuestion()
     }
+    
+    func showAnswerResult(isCorrect: Bool) {
+        viewController?.highlightImageBorder(isCorrectAnswer: isCorrect)
+        viewController?.disableButtons()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else {return}
+            showNextQuestionOrResults()
+            viewController?.resetImageBorder()
+            viewController?.enableButtons()
+        }
+    }
+    
 }
