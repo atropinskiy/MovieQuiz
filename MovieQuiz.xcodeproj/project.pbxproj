@@ -10,9 +10,6 @@
 		226FDEF82C4847E600D6C51E /* MovieQuizPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226FDEF72C4847E600D6C51E /* MovieQuizPresenter.swift */; };
 		226FDF002C4938C700D6C51E /* MovieQuizPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226FDEFF2C4938C700D6C51E /* MovieQuizPresenterTests.swift */; };
 		226FDF0A2C49451D00D6C51E /* MovieQuizViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226FDF092C49451D00D6C51E /* MovieQuizViewControllerProtocol.swift */; };
-		226FDF0B2C49451D00D6C51E /* MovieQuizViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226FDF092C49451D00D6C51E /* MovieQuizViewControllerProtocol.swift */; };
-		226FDF0C2C49455D00D6C51E /* MovieQuizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1ABAB52831907B00B3E448 /* MovieQuizViewController.swift */; };
-		226FDF0D2C49457600D6C51E /* MovieQuizPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226FDEF72C4847E600D6C51E /* MovieQuizPresenter.swift */; };
 		2271298A2C0F062E00B5BCA7 /* YS Display-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226D9DA52C0F01D0008955BB /* YS Display-Bold.ttf */; };
 		2271298B2C0F063100B5BCA7 /* YS Display-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226D9DA42C0F01D0008955BB /* YS Display-Medium.ttf */; };
 		2271298F2C1B176200B5BCA7 /* QuestionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2271298E2C1B176200B5BCA7 /* QuestionFactory.swift */; };
@@ -436,10 +433,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				226FDF0D2C49457600D6C51E /* MovieQuizPresenter.swift in Sources */,
-				226FDF0B2C49451D00D6C51E /* MovieQuizViewControllerProtocol.swift in Sources */,
 				226FDF002C4938C700D6C51E /* MovieQuizPresenterTests.swift in Sources */,
-				226FDF0C2C49455D00D6C51E /* MovieQuizViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,6 +2,7 @@ import UIKit
 
 final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     
+    
     //  Аутлеты и переменные
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var textLabel: UILabel!
@@ -10,16 +11,12 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     @IBOutlet weak private var yesButton: UIButton!
     @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     
-    var alertPresenter: AlertPresenterProtocol?
     private var presenter: MovieQuizPresenter!
-    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        alertPresenter = AlertPresenter(delegate: self)
         presenter = MovieQuizPresenter(viewController: self)
-        presenter.viewController = self
     }
     
     // Функция показа вопроса и остального контента
@@ -30,8 +27,24 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         imageView.layer.cornerRadius = 20
     }
     
-    func show(alert result: AlertModel) {
-        alertPresenter?.showAlert(quiz: result)
+    func show(quiz result: QuizResultsViewModel) {
+        let message = presenter.makeResultsMessage()
+
+        let alert = UIAlertController(
+            title: result.title,
+            message: message,
+            preferredStyle: .alert)
+
+            let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in
+                guard let self = self else { return }
+
+                self.presenter.restartGame()
+            }
+
+        alert.addAction(action)
+        alert.view.accessibilityIdentifier = "Game results"
+
+        self.present(alert, animated: true, completion: nil)
     }
     
     func highlightImageBorder(isCorrectAnswer: Bool) {
@@ -74,7 +87,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
                                buttonText: "Попробовать еще раз") { _ in
             self.presenter.restartGame()
         }
-        alertPresenter?.showAlert(quiz: model)
+        presenter.alertPresenter?.showAlert(quiz: model)
     }
     
     
