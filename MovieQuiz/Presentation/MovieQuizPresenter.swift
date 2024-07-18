@@ -1,13 +1,12 @@
 import UIKit
 
 final class MovieQuizPresenter: QuestionFactoryDelegate {
-    private let questionsAmount: Int = 10
     private var currentQuestion: QuizQuestion?
-    weak var viewController: MovieQuizViewController?
-    var statisticService: StatisticServiceProtocol = StatisticService()
-    var questionFactory: QuestionFactoryProtocol?
+    weak var viewController: MovieQuizViewControllerProtocol?
+    private var statisticService: StatisticServiceProtocol = StatisticService()
+    private var questionFactory: QuestionFactoryProtocol?
     var correctAnswers: Int = 0
-    
+    private let questionsAmount: Int = 10
     private var currentQuestionIndex: Int = 0
 
     init(viewController: MovieQuizViewController) {
@@ -78,14 +77,15 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     func showNextQuestionOrResults() {
         if self.isLastQuestion() {
-            self.makeResultsMessage()
+            let result = makeResultsMessage()
+            viewController?.show(alert: result)
         } else { // если еще не конец игры
             self.switchToNextQuestion()
             self.questionFactory?.requestNextQuestion()
         }
     }
     
-    func makeResultsMessage() {
+    func makeResultsMessage() -> AlertModel {
         statisticService.store(correct: correctAnswers, total: self.questionsAmount)
         let gamesCount = statisticService.gamesCount
         let totalAccuracy = statisticService.totalAccuracy
@@ -103,8 +103,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
                 correctAnswers = 0
                 self.resetQuestionIndex()
                 self.questionFactory?.requestNextQuestion() }
-        
-        viewController?.alertPresenter?.showAlert(quiz: alertModel)
+        return alertModel
     }
     
     func restartGame() {

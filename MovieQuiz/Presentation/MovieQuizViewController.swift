@@ -1,6 +1,7 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
+    
     //  Аутлеты и переменные
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var textLabel: UILabel!
@@ -27,6 +28,10 @@ final class MovieQuizViewController: UIViewController {
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
         imageView.layer.cornerRadius = 20
+    }
+    
+    func show(alert result: AlertModel) {
+        alertPresenter?.showAlert(quiz: result)
     }
     
     func highlightImageBorder(isCorrectAnswer: Bool) {
